@@ -52,11 +52,23 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
-
             _context.Entry(student).State = EntityState.Modified;
 
             try
             {
+            if (student.Email is "" or null)
+            {
+                return BadRequest("Invalid email: NULL");
+            }
+
+            bool emailValidator = student.Email.Contains("@hotmail.com") || student.Email.Contains("@outlook.com") || student.Email.Contains("@gmail.com");
+            if (emailValidator == false) { return BadRequest("Invalid email:incorrect format"); }
+
+            if (student.Name is "" or null)
+            {
+                return BadRequest("Invalid Name: NULL");
+            }
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -85,6 +97,33 @@ namespace API.Controllers
                 if (StudentExists(student.RA))
                 {
                     return BadRequest("Student already registered in this RA");
+                }
+                if (student.RA == 0 || student.RA > 9999999) //limit ra to 7 decimal places
+                {
+                    return BadRequest("Invalid RA: NULL or incorrect format");
+                }
+
+                if (student.Name is "" or null)
+                {
+                    return BadRequest("Invalid Name: NULL");
+                }
+
+                bool emailValidator = student.Email.Contains("@hotmail.com") || student.Email.Contains("@outlook.com") || student.Email.Contains("@gmail.com");
+                if (emailValidator == false) { return BadRequest("Invalid email: Incorrect format"); }
+
+                const int cpfMax = 14;
+                if(student.CPF.Length > cpfMax)
+                {
+                    student.CPF = student.CPF.Substring(0, cpfMax);
+                }
+
+                if (student.CPF is "" or null || student.CPF.Length < cpfMax)
+                {
+                    return BadRequest("Invalid CPF: NULL or incorrect format");
+                }
+                if (StudentExistsByCPF(student.CPF))
+                {
+                    return BadRequest("Student already registered with that CPF");
                 }
 
                 await _context.SaveChangesAsync();
