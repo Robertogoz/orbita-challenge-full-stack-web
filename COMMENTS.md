@@ -2,6 +2,8 @@
 Pois era a arquitetura que eu tinha mais familiaridade.
 
 # Lista de bibliotecas de terceiros utilizadas
+Vue.js: Criação das telas.
+Vuetify: Estilização das telas.
 Axios: para consumir a API no front-end.
 
 # O que você melhoraria se tivesse mais tempo
